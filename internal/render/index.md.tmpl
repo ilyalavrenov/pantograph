@@ -1,0 +1,6 @@
+{{.Gen}}# Core flows
+
+Auto-generated diagrams of this codebase's core flows, grouped by domain, from `//pantograph:` annotations in the Go source. Each domain page fuses its flows into one consolidated diagram.
+
+{{range .Entries}}- [`{{.ID}}`]({{.ID}}.md){{if .Note}} - {{.Note}}{{end}}
+{{end -}}

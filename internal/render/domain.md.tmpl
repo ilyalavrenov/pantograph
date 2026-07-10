@@ -1,0 +1,21 @@
+{{.Gen}}# Domain: `{{.ID}}`
+
+{{if .Note}}{{.Note}}
+
+{{end}}Consolidated view of the `{{.ID}}` flows, fused from `//pantograph:` annotations in the Go source: {{.Members}}. Each box links to the function that implements that step (`pkg.Type.Method` - see `file:line`).
+
+<p align="center">
+  <img src="{{.SVGFile}}" alt="domain: {{.ID}}" width="{{.Width}}">
+</p>
+
+## Steps
+
+{{range .Steps}}- **{{.Label}}** - `{{.Qual}}` ([{{.Pos}}]({{.Link}}))
+{{end}}
+<details>
+<summary>D2 source</summary>
+
+```d2
+{{.D2Src}}```
+
+</details>
