@@ -1,0 +1,16 @@
+# The kind vocabulary is yours to define. These names are specific to this
+# example, not built into pantograph. Each maps to a d2 shape.
+kinds:
+  entry: page
+  decision: diamond
+  process: "" # plain rectangle
+  store: cylinder
+
+# domains group flows onto output pages (docs/<domain>.md + .svg).
+domains:
+  pipeline:
+    flows: [upload]
+    note: "validate the upload, queue it, store it from a worker"
+  auth:
+    flows: [auth]
+    note: "check the token, then load its session"
