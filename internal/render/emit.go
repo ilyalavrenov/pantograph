@@ -41,7 +41,7 @@ func Render(flows map[string]*collect.Flow, shapes map[string]string, outDir str
 
 	results := make([]flowResult, len(ids))
 
-	cache := newCompileCache()
+	cache := newDiskCompileCache(cacheRoot())
 
 	var wg sync.WaitGroup
 
@@ -78,37 +78,27 @@ const maxImgWidth = 880
 
 const batchGCPercent = 400
 
-func svgWidth(svg []byte) int {
-	m := svgWidthRe.FindSubmatch(svg)
+func svgDim(svg []byte, re *regexp.Regexp, fallback int) int {
+	m := re.FindSubmatch(svg)
 	if m == nil {
-		return maxImgWidth
+		return fallback
 	}
 
-	w, err := strconv.Atoi(string(m[1]))
-	if err != nil || w <= 0 {
-		return maxImgWidth
+	v, err := strconv.Atoi(string(m[1]))
+	if err != nil || v <= 0 {
+		return fallback
 	}
 
-	return w
+	return v
 }
 
-var svgWidthRe = regexp.MustCompile(`width="(\d+)"`)
+func svgWidth(svg []byte) int  { return svgDim(svg, svgWidthRe, maxImgWidth) }
+func svgHeight(svg []byte) int { return svgDim(svg, svgHeightRe, 0) }
 
-func svgHeight(svg []byte) int {
-	m := svgHeightRe.FindSubmatch(svg)
-	if m == nil {
-		return 0
-	}
-
-	h, err := strconv.Atoi(string(m[1]))
-	if err != nil || h <= 0 {
-		return 0
-	}
-
-	return h
-}
-
-var svgHeightRe = regexp.MustCompile(`height="(\d+)"`)
+var (
+	svgWidthRe  = regexp.MustCompile(`width="(\d+)"`)
+	svgHeightRe = regexp.MustCompile(`height="(\d+)"`)
+)
 
 const targetAspectRatio = 16.0 / 9.0
 
@@ -828,6 +818,8 @@ func edgeLabel(e collect.Edge) string {
 	}
 }
 
+const plaintextTag = "text"
+
 func addEdge(root *d2Map, from, to string, e collect.Edge, useNode bool) {
 	label := edgeLabel(e)
 	if label == "" {
@@ -854,7 +846,7 @@ func addEdge(root *d2Map, from, to string, e collect.Edge, useNode bool) {
 	labelNode.set("width", uq(strconv.Itoa(labelNodeWidth(label))))
 	labelNode.set("height", uq(strconv.Itoa(labelNodeHeight(label))))
 
-	root.labeledChildPath(splitID(labelID), blockStr("txt", label), labelNode)
+	root.labeledChildPath(splitID(labelID), blockStr(plaintextTag, label), labelNode)
 
 	noArrow := newD2Map()
 	noArrow.setPath([]string{"target-arrowhead", "shape"}, uq("none"))
@@ -871,7 +863,7 @@ func addEdgeInline(root *d2Map, from, to string, e collect.Edge, label string) {
 
 	attrs.setPath([]string{d2Style, d2TextTransform}, uq("none"))
 	markGoroutine(attrs, e)
-	root.edge(splitID(from), splitID(to), blockStr("txt", label), attrs)
+	root.edge(splitID(from), splitID(to), blockStr(plaintextTag, label), attrs)
 }
 
 const goroutineStrokeDash = "3"

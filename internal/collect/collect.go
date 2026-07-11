@@ -10,12 +10,11 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 
 	"github.com/ilyalavrenov/pantograph/internal/config"
 	"golang.org/x/tools/go/packages"
 )
-
-const defaultPattern = "./..."
 
 const loadMode = packages.NeedName | packages.NeedFiles | packages.NeedSyntax | packages.NeedModule |
 	packages.NeedTypes | packages.NeedTypesInfo | packages.NeedImports | packages.NeedDeps
@@ -25,7 +24,6 @@ const discoverMode = packages.NeedName | packages.NeedFiles | packages.NeedSynta
 type taggedFunc struct {
 	fn    *ast.FuncDecl
 	info  *types.Info
-	pkg   *types.Package
 	file  *ast.File
 	nodes []*Node
 }
@@ -180,8 +178,9 @@ func loadPackages(mode packages.LoadMode, fset *token.FileSet, root string, pats
 	return pkgs, nil
 }
 
-func moduleDir() (string, error) {
-	pkgs, err := packages.Load(&packages.Config{Mode: packages.NeedModule}, defaultPattern)
+//nolint:gochecknoglobals // memoized once-per-process module-root resolver
+var moduleDir = sync.OnceValues(func() (string, error) {
+	pkgs, err := packages.Load(&packages.Config{Mode: packages.NeedModule}, "./...")
 	if err != nil {
 		return "", fmt.Errorf("resolve module root: %w", err)
 	}
@@ -193,7 +192,7 @@ func moduleDir() (string, error) {
 	}
 
 	return "", errors.New("no enclosing Go module found from the current directory")
-}
+})
 
 func OutputRelPath(outDir string) (string, error) {
 	root, err := moduleDir()
@@ -352,7 +351,6 @@ func registerTaggedFunc(pkg *packages.Package, file *ast.File, fn *ast.FuncDecl,
 		st.funcs = append(st.funcs, taggedFunc{
 			fn:    fn,
 			info:  pkg.TypesInfo,
-			pkg:   pkg.Types,
 			file:  file,
 			nodes: nodes,
 		})

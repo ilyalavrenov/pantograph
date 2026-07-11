@@ -111,10 +111,6 @@ func applyNodeKey(n *Node, tok dtok) error {
 		n.HandoffFrom = append(n.HandoffFrom, tok.val)
 	case keyHandoffTo:
 		n.HandoffTo = append(n.HandoffTo, tok.val)
-	case "ref":
-		return fmt.Errorf("pantograph:%s: ref= removed with the flow atlas; cross-flow links are no longer drawn", n.Flow)
-	case "step":
-		return fmt.Errorf("pantograph:%s: step= removed; the node label is the function name", n.Flow)
 	default:
 		return fmt.Errorf("pantograph:%s: unknown key %q (want kind/handoff-from/handoff-to/cond/note)", n.Flow, tok.key)
 	}

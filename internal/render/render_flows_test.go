@@ -26,7 +26,7 @@ func TestRenderFlowDeterministic(t *testing.T) {
 	first := renderFlow(f, nil, testShapes)
 	assert.Equal(t, first, renderFlow(f, nil, testShapes), "renderFlow must be deterministic")
 
-	assert.Contains(t, first, "lane_worker.A -> lane_api.B: |txt n;with:specials |", "edge note is an inline txt label")
+	assert.Contains(t, first, "lane_worker.A -> lane_api.B: |text n;with:specials |", "edge note is an inline text label")
 	assert.NotContains(t, first, "lbl_A_B", "default render adds no label node")
 	assert.NotContains(t, first, "class: elabel", "default render uses no elabel node")
 	assert.Contains(t, first, "style.text-transform: none", "inline label opts out of CapsLock")
@@ -38,7 +38,7 @@ func TestRenderFlowDeterministic(t *testing.T) {
 	require.NoError(t, err, "rendered flow must compile")
 
 	node := renderFlow(f, map[string]bool{useNodeKey("worker.A", "api.B"): true}, testShapes)
-	assert.Contains(t, node, "lane_worker.lbl_A_B: |txt n;with:specials | {", "node mode: edge note is an elabel txt node")
+	assert.Contains(t, node, "lane_worker.lbl_A_B: |text n;with:specials | {", "node mode: edge note is an elabel text node")
 	assert.Contains(t, node, "class: elabel", "node mode: label node carries the elabel class")
 	assert.Contains(t, node, "lane_worker.A -> lane_worker.lbl_A_B: {", "node mode: src -> labelNode segment")
 	assert.Contains(t, node, "target-arrowhead.shape: none", "node mode: src segment drops its arrowhead")
@@ -57,14 +57,14 @@ func TestRenderFlowEdgeCondDistinctFromNote(t *testing.T) {
 
 	out := renderFlow(f, nil, testShapes)
 
-	wantInline := "lane_api.Lock -> lane_api.Go: |txt\n  won lock\n  first caller wins\n|"
+	wantInline := "lane_api.Lock -> lane_api.Go: |text\n  won lock\n  first caller wins\n|"
 	assert.Contains(t, out, wantInline, "cond over note in one inline txt label")
 	assert.NotContains(t, out, "lbl_Lock_Go", "default render adds no label node")
 	assert.NotContains(t, out, "tooltip:", "no tooltips — they don't render as readable text")
 	assert.Contains(t, out, "style.bold: true", "a cond-bearing label is bold")
 
 	node := renderFlow(f, map[string]bool{useNodeKey("api.Lock", "api.Go"): true}, testShapes)
-	wantLabelNode := "lane_api.lbl_Lock_Go: |txt\n  won lock\n  first caller wins\n| {"
+	wantLabelNode := "lane_api.lbl_Lock_Go: |text\n  won lock\n  first caller wins\n| {"
 	assert.Contains(t, node, wantLabelNode, "node mode: cond over note in one txt label node")
 	assert.Contains(t, node, "lane_api.Lock -> lane_api.lbl_Lock_Go: {", "node mode: src -> labelNode segment")
 	assert.Contains(t, node, "lane_api.lbl_Lock_Go -> lane_api.Go", "node mode: labelNode -> dst carries the arrow")
@@ -166,10 +166,10 @@ func TestWrapLabel(t *testing.T) {
 		Note: "writes record FIRST, then inserts into the shared map next",
 	}, false)
 
-	assert.Contains(t, out, "|txt\n", "long edge label is a txt block (carries newlines)")
+	assert.Contains(t, out, "|text\n", "long edge label is a text block (carries newlines)")
 	assert.Regexp(t, `\n\s*won the write race\n`, out, "cond is the first label line")
 	assert.Contains(t, out, "\n  writes record FIRST, then inserts into the\n",
-		"the long note wraps at the width boundary inside the txt block")
+		"the long note wraps at the width boundary inside the text block")
 	assert.Contains(t, out, "\n  shared map next\n", "the wrapped remainder is its own txt-block line")
 }
 

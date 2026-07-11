@@ -75,7 +75,7 @@ lane_worker: worker {
   }
 }
 lane_api.HandleUpload -> lane_api.validate
-lane_api.HandleUpload -> lane_worker.Process: |txt queued | {
+lane_api.HandleUpload -> lane_worker.Process: |text queued | {
   style.text-transform: none
 }
 lane_worker.Process -> lane_worker.save

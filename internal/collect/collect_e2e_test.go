@@ -43,11 +43,6 @@ func TestParseNodeDirective(t *testing.T) {
 			want: &Node{Flow: "drain", Kind: "store"},
 		},
 		{
-			name:    "ref= is rejected (removed with the atlas)",
-			line:    `//pantograph:ledger-reconcile ref=apply-updates`,
-			wantErr: `ref= removed`,
-		},
-		{
 			name: "handoff-from",
 			line: `//pantograph:drain handoff-from=job-finalize`,
 			want: &Node{Flow: "drain", HandoffFrom: []string{"job-finalize"}},
@@ -122,11 +117,6 @@ func TestParseNodeDirective(t *testing.T) {
 			name:    "cond on a NON-handoff node is an error",
 			line:    `//pantograph:drain cond="orphan"`,
 			wantErr: "labels no edge here",
-		},
-		{
-			name:    "step= surfaces a migration error",
-			line:    `//pantograph:drain step=mark`,
-			wantErr: "step= removed",
 		},
 		{
 			name:    "-> arrow surfaces a migration error",
