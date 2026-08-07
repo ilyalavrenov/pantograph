@@ -7,7 +7,7 @@ require (
 	github.com/urfave/cli/v3 v3.10.1
 	go.yaml.in/yaml/v3 v3.0.4
 	golang.org/x/tools v0.48.0
-	oss.terrastruct.com/d2 v0.7.1
+	oss.terrastruct.com/d2 v0.7.2
 )
 
 require (
