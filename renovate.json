@@ -29,6 +29,25 @@
         "github.com/ilyalavrenov/pantograph"
       ],
       "enabled": false
+    },
+    {
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchFileNames": [
+        "example/go.mod"
+      ],
+      "matchDepTypes": [
+        "indirect"
+      ],
+      "matchPackageNames": [
+        "github.com/stretchr/testify",
+        "github.com/urfave/cli/v3",
+        "go.yaml.in/yaml/v3",
+        "golang.org/x/tools",
+        "oss.terrastruct.com/d2"
+      ],
+      "enabled": true
     }
   ],
   "customManagers": [
