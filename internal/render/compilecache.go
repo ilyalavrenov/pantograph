@@ -64,7 +64,7 @@ func buildID() string {
 			return
 		}
 
-		parts := []string{bi.Main.Version}
+		parts := []string{bi.Main.Version, bi.GoVersion}
 		for _, s := range bi.Settings {
 			if s.Key == "vcs.revision" || s.Key == "vcs.modified" {
 				parts = append(parts, s.Value)
