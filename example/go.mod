@@ -2,6 +2,8 @@ module github.com/ilyalavrenov/pantograph/example
 
 go 1.26.5
 
+toolchain go1.27.2
+
 // Build the example's diagrams against the pantograph source in this repo.
 require github.com/ilyalavrenov/pantograph v0.0.0 // indirect
 
