@@ -24,6 +24,10 @@ jobs:
           # renovate: datasource=github-releases depName=golangci/golangci-lint
           version: "v2.15.0"
       - run: go test -race ./...
+      - run: go run "golang.org/x/vuln/cmd/govulncheck@${VULN_VERSION}" ./...
+        env:
+          # renovate: datasource=go depName=golang.org/x/vuln
+          VULN_VERSION: "v1.8.0"
       - name: check examples
         working-directory: example
         run: |
