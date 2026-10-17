@@ -2,6 +2,8 @@ module github.com/ilyalavrenov/pantograph
 
 go 1.26.5
 
+toolchain go1.26.9
+
 require (
 	github.com/stretchr/testify v1.12.1
 	github.com/urfave/cli/v3 v3.14.0
