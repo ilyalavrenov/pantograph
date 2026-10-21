@@ -2,7 +2,7 @@ module github.com/ilyalavrenov/pantograph
 
 go 1.26.5
 
-toolchain go1.27.2
+toolchain go1.27.3
 
 require (
 	github.com/stretchr/testify v1.12.1
